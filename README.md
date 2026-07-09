@@ -5,7 +5,7 @@ Python services that need multi-locale content management.
 
 ## Install
 
-    pip install git+https://github.com/aditya-1967/translation-toolkit.git
+    pip install git+https://github.com/Cynteract/translation-toolkit.git
 
 ## Usage
 
