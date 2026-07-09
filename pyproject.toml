@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "translation-toolkit"
+version = "0.1.0"
+description = "Reusable localization dataset models and Google Cloud Translate engine"
+requires-python = ">=3.10"
+dependencies = [
+    "google-cloud-translate==3.26.0",
+    "google-auth==2.49.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
