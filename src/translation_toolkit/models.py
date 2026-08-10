@@ -53,6 +53,21 @@ class LocalizationDataset:
             for key, locales in table.entries.items():
                 yield table_name, key, locales
 
+    def merge_onto(self, other: "LocalizationDataset") -> "LocalizationDataset":
+        """Overlay `other`'s non-empty values onto self, in place. `other` wins on
+        conflict; self's existing entries are preserved wherever `other` doesn't
+        have a value for that (table, entry, locale). Returns self for convenience.
+        Used by connectors (e.g. Sheets sync) that need an external source of
+        truth to take priority over the current on-disk/cached state."""
+        for table_name, table in other.tables.items():
+            for entry_id, locales in table.entries.items():
+                for locale, value in locales.items():
+                    value = value.strip() if isinstance(value, str) else value
+                    if not value:
+                        continue
+                    self.add_entry(table_name, entry_id, locale, value)
+        return self
+
     def to_json(self) -> Dict[str, Dict[str, Dict[str, str]]]:
         return {
             table_name: table.entries
