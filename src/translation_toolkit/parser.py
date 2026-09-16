@@ -2,14 +2,19 @@
 # Universal file parser — converts structured files (JSON, Markdown, MDX)
 # into translatable Block lists and reassembles them post-translation.
 
+from __future__ import annotations
+
+from dataclasses import dataclass
 import html
 import re
-import logging
-from typing import Any, Callable, Optional
+from typing import Any
 
-from .models import Block
 
-logger = logging.getLogger(__name__)
+@dataclass
+class Block:
+    text: str
+    should_translate: bool
+    key: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -103,12 +108,12 @@ def _reassemble_json(blocks: list[Block], placeholder_table: dict[str, str]) -> 
 
 _FM_PATTERN = re.compile(r"^---\n([\s\S]*?)\n---\n?", re.MULTILINE)
 _KV_PATTERN = re.compile(
-    r"(^\s*(?:title|description|summary):\s*)([^\n]*)(\n?)",
+    r"(^\s*(?:title|description|summary):[ \t]*)([^\n]*)(\n?)",
     re.MULTILINE | re.IGNORECASE,
 )
 _MD_SYNTAX_PATTERN = re.compile(
-    r"(```[\s\S]*?```)|"
-    r"(`[^`]+`)|"
+    r"(\x60{3}[\s\S]*?\x60{3})|"
+    r"(\x60[^\x60]+\x60)|"
     r"(<[^>]+>)|"
     r"(!?\[.*?\]\(.*?\))|"
     r"(^\s*#{1,6}\s*)|"
